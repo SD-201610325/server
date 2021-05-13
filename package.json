@@ -1,0 +1,24 @@
+{
+  "name": "server",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SD-201610325/server.git"
+  },
+  "author": "Jesulino Macêdo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SD-201610325/server/issues"
+  },
+  "homepage": "https://github.com/SD-201610325/server#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
