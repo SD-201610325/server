@@ -27,6 +27,7 @@ app.post('/recurso', (req, resp) => {
   }
 })
 
-const server = app.listen(3000, '0.0.0.0', () => {
-  console.log("Aplicação Iniciada com Sucesso na porta 3000!")
+const port = process.argv[2]
+const server = app.listen(port, '0.0.0.0', () => {
+  console.log(`Aplicação Iniciada com Sucesso na porta ${port}!`)
 })

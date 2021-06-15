@@ -1,0 +1,3 @@
+build:
+  docker:
+    sd-app-server: Dockerfile
