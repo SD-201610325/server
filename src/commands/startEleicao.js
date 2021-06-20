@@ -34,15 +34,23 @@ const startEleicao = async (idEleicao) => {
 }
 
 const requestStartEleicao = async (info, idEleicao) => {
-  Logger.info(`Requisitando início de eleição para o servidor '${info.url}'...`)
-  const response = await httpClient.post(info.url + "/eleicao", { "id": idEleicao })
-  Logger.info(`Resposta do servidor '${info.url}': ${JSON.stringify(response.data)}`)
+  try {
+    Logger.info(`Requisitando início de eleição para o servidor '${info.url}'...`)
+    const response = await httpClient.post(info.url + "/eleicao", { "id": idEleicao })
+    Logger.info(`Resposta do servidor '${info.url}': ${JSON.stringify(response.data)}`)
+  } catch (e) {
+    Logger.error(`Erro em POST '/eleicao' do servidor '${info.url}. Mensagem: ${JSON.stringify(e.message)}`)
+  }
 }
 
 const requestDeclararCoordenador = async (info, idCoordenador, idEleicao) => {
-  Logger.info(`Enviando declaração de coordenador para o servidor '${info.url}'...`)
-  const response = await httpClient.post(info.url + "/eleicao/coordenador", { "coordenador": idCoordenador, "id_eleicao": idEleicao })
-  Logger.info(`Resposta do servidor '${info.url}': ${JSON.stringify(response.data)}`)
+  try {
+    Logger.info(`Enviando declaração de coordenador para o servidor '${info.url}'...`)
+    const response = await httpClient.post(info.url + "/eleicao/coordenador", { "coordenador": idCoordenador, "id_eleicao": idEleicao })
+    Logger.info(`Resposta do servidor '${info.url}': ${JSON.stringify(response.data)}`)
+  } catch (e) {
+    Logger.error(`Erro em POST '/eleicao/coordenador' do servidor '${info.url}'. Mensagem: ${JSON.stringify(e.message)}`)
+  }
 }
 
 export default startEleicao

@@ -11,12 +11,24 @@ let myInfo = {
   "eleicao": "valentao",
   "servidores_conhecidos": [
     {
-      "id": 1,
+      "id": "1",
       "url": "https://sd-201620236.herokuapp.com"
     },
     {
-      "id": 2,
+      "id": "2",
       "url": "https://sd-mgs.herokuapp.com"
+    },
+		{
+      "id": "3",
+      "url": "https://sd-jhsq.herokuapp.com"
+    },
+		{
+      "id": "4",
+      "url": "https://sd-rdm.herokuapp.com"
+    },
+		{
+      "id": "5",
+      "url": "https://sd-dmss.herokuapp.com/"
     }
   ]
 }
