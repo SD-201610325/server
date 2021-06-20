@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "type": "module",
   "main": "index.js",
@@ -20,7 +20,11 @@
   },
   "homepage": "https://github.com/SD-201610325/server#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "express": "^4.17.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
     "nodemon": "^2.0.7"
   }
 }

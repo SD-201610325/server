@@ -3,36 +3,34 @@ import Logger from "../utils/logger.js"
 let myInfo = {
   "componente": "server",
   "descrição": "Serve os clientes com os serviços X, Y e Z",
-  "versao": "0.0.3",
+  "versao": process.env.npm_package_version,
   "ponto_de_acesso": "https://sd-app-server-jesulino.herokuapp.com",
   "status": "up",
-  "identificacao": 7,
+  "identificacao": 4,
   "lider": 0,
   "eleicao": "valentao",
   "servidores_conhecidos": [
     {
-      "id": "",
-      "url": "https://sd-201620236.herokuapp.com/"
+      "id": 1,
+      "url": "https://sd-201620236.herokuapp.com"
     },
     {
-      "id": "",
-      "url": "https://sd-mgs.herokuapp.com/"
-    },
-    {
-      "id": "",
-      "url": "https://sd-app-server-jesulino.herokuapp.com"
+      "id": 2,
+      "url": "https://sd-mgs.herokuapp.com"
     }
   ]
 }
 let coordenadorAtual = undefined
+let othersInfo = []
 
 export default class InfoService {
   constructor() { }
   
   getMyInfo() {
     Logger.info(`Consultando myInfo...`)
-    Logger.info(`MyInfo consultado com sucesso!`)
-    return myInfo
+    const info = myInfo
+    Logger.info(`MyInfo consultado com sucesso! Valor: ${JSON.stringify(info)}`)
+    return info
   }
 
   updateMyInfo(info) {
@@ -41,7 +39,8 @@ export default class InfoService {
     myInfo.identificacao = info.identificacao ?? myInfo.identificacao
     myInfo.lider = info.lider ?? myInfo.lider
     myInfo.eleicao = info.eleicao || myInfo.eleicao
-    Logger.info(`MyInfo atualizado com sucesso!`)
+    myInfo.servidores_conhecidos = info.servidores_conhecidos ?? myInfo.servidores_conhecidos
+    Logger.info(`MyInfo atualizada com sucesso!`)
 
     return myInfo
   }
@@ -57,5 +56,38 @@ export default class InfoService {
     Logger.info(`Atualizando coordenador atual com id '${JSON.stringify(idCoordenador)}'...`)
     coordenadorAtual = idCoordenador
     Logger.info(`Coordenador atual atualizado com sucesso!`)
+  }
+
+  getOthersInfo() {
+    Logger.info(`Consultando info atual dos servidores conhecidos...`)
+    const infos = othersInfo
+    Logger.info(`Info atual dos servidores conhecidos obtida com sucesso! Valor: ${JSON.stringify(infos)}`)
+    return infos
+  }
+
+  setOthersInfo(infos) {
+    Logger.info(`Salvando info atual dos servidores conhecidos com valor '${JSON.stringify(infos)}'...`)
+    othersInfo = infos
+    Logger.info(`Info atual dos servidores conhecidos salva com sucesso!`)
+  }
+
+  updateOthersInfo(infos) {
+    Logger.info(`Atualizando info atual dos servidores conhecidos com valor '${JSON.stringify(infos)}'...`)
+    infos.forEach(e => {
+      const other = othersInfo.find(o => o.id === e.id)
+      if (other) {
+        Object.assign(other, e)
+      } else {
+        othersInfo.push(e)
+      }
+    })
+    Logger.info(`Info atual dos servidores conhecidos atualizada com sucesso!`)
+  }
+
+  setOtherInfo(id, info) {
+    Logger.info(`Atualizando info atual dos servidores conhecidos com valor '${JSON.stringify(infos)}'...`)
+    const other = othersInfo.find(o => o.id === id)
+    Object.assign(other, info)
+    Logger.info(`Info atual dos servidores conhecidos atualizada com sucesso!`)
   }
 }

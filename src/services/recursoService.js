@@ -1,3 +1,4 @@
+import config from "../../config.js"
 import Logger from "../utils/logger.js"
 
 let recurso = {
@@ -22,7 +23,7 @@ export default class RecursoService {
     } else {
       recurso.ocupado = true
       Logger.info(`Recurso alocado com sucesso!`)
-      const atraso = 10000
+      const atraso = config.UPDATE_INFO_DELAY_MS
       Logger.info(`Programando desalocar recurso para iniciar em ${atraso / 1000}s`)
       setTimeout(this.desalocarRecurso, atraso)
       return true

@@ -1,3 +1,5 @@
+import startEleicao from "../commands/startEleicao.js"
+import updateInfo from "../commands/updateInfo.js"
 import Mensagem from "../models/mensagem.js"
 import EleicaoService from "../services/eleicaoService.js"
 import InfoService from "../services/infoService.js"
@@ -24,24 +26,12 @@ export default class EleicaoController {
 
   iniciaEleicao(req, resp, next) {
     Logger.info(`Iniciando iniciaEleicao...`)
-    const eleicao = eleicaoService.getEleicaoAtual()
-    if (eleicao.ativo) {
-      const msg = new Mensagem(mensagens.eleicao.eleicaoAndamento, false)
-      msg.idEleicaoAtual = eleicao.id
-      resp.status(409)
-      resp.body = msg
-      Logger.warn(`iniciaEleicao finalizado com falha!`)
-      next()
-      
-      return
-    }
 
-    eleicao.id = req.body.id
-    eleicao.ativo = true
-    eleicaoService.setEleicaoAtual(eleicao)
-    const atraso = 10000
-    Logger.info(`Programando finalização de eleição para iniciar em ${atraso / 1000}s`)
-    setTimeout(() => eleicaoService.finalizaEleicaoAtual(), atraso)
+    Logger.info("Chamando UpdateInfo...")
+    updateInfo().then(() => {
+      Logger.info(`Iniciando processo de eleição...`)
+      startEleicao(req.body.id)
+    })
 
     const msg = new Mensagem(mensagens.eleicao.eleicaoIniciada, true)
     resp.body = msg
