@@ -19,15 +19,15 @@ const startEleicao = async (idEleicao) => {
 
   if (filteredOthersInfo.length) {
     Logger.info("Encontrado servidores maiores. Enviando requisições de eleição...")
-    eleicaoService.setEleicaoAtual({ "id": idEleicao, "ativo": true })
     await Promise.all(filteredOthersInfo.map(e => requestStartEleicao(myInfo.servidores_conhecidos.find(s => s.id === e.id), idEleicao)))
     Logger.info("Processo de eleição repassado para outros servidores!")
   } else {
-    Logger.info("Nenhum servidor maior encontrado. Enviando requisições de coordenador...")
+    Logger.info("Nenhum servidor maior encontrado. Enviando requisições de coordenador e finalizando eleição...")
     await Promise.all(myInfo.servidores_conhecidos.map(e => requestDeclararCoordenador(e, myInfo.identificacao, idEleicao)))
     infoService.updateMyInfo({ "lider": 1 })
     infoService.atualizaCoordenador(myInfo.identificacao)
-    Logger.info("Eleição finalizada com sucesso!")
+    eleicaoService.finalizaEleicaoAtual()
+    Logger.info(`Eleição '${idEleicao}' finalizada com sucesso!`)
   }
 
   return true

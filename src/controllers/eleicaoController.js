@@ -27,6 +27,24 @@ export default class EleicaoController {
   iniciaEleicao(req, resp, next) {
     Logger.info(`Iniciando iniciaEleicao...`)
 
+    const eleicao = eleicaoService.getEleicaoAtual()
+    if (eleicao.ativo) {
+      let msg = ""
+      if (eleicao.id == req.body.id) {
+        Logger.warn(mensagens.eleicao.eleicaoAndamento)
+        msg = new Mensagem(mensagens.eleicao.eleicaoAndamento, false)
+      } else {
+        Logger.warn(mensagens.eleicao.outraEleicaoAndamento)
+        msg = new Mensagem(mensagens.eleicao.outraEleicaoAndamento, false)
+      }
+      resp.body = msg
+      Logger.info(`iniciaEleicao finalizado com falha!`)
+      next()
+      return
+    }
+
+    eleicaoService.setEleicaoAtual({ "id": req.body.id, "ativo": true })
+
     Logger.info("Chamando UpdateInfo...")
     updateInfo().then(() => {
       Logger.info(`Iniciando processo de eleição...`)
