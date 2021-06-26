@@ -28,7 +28,7 @@ let myInfo = {
     },
 		{
       "id": "5",
-      "url": "https://sd-dmss.herokuapp.com/"
+      "url": "https://sd-dmss.herokuapp.com"
     }
   ]
 }
