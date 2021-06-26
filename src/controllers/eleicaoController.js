@@ -61,10 +61,7 @@ export default class EleicaoController {
     Logger.info(`Iniciando atualizaCoordenador...`)
     infoService.atualizaCoordenador(req.body.coordenador)
 
-    const eleicao = eleicaoService.getEleicaoAtual()
-    if (eleicao.ativo && eleicao.id == req.body.id_eleicao) {
-      eleicaoService.finalizaEleicaoAtual()
-    }
+    eleicaoService.finalizaEleicaoAtual()
 
     const msg = new Mensagem(mensagens.eleicao.coordenadorAtualizado, true)
     resp.body = msg
