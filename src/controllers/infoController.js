@@ -1,18 +1,20 @@
 import InfoService from "../services/infoService.js"
 import Logger from "../utils/logger.js"
 import mensagens from "../utils/mensagens.js"
+import BaseController from "./baseController.js"
 
 const infoService = new InfoService()
 
-export default class InfoController {
-  constructor() { }
+export default class InfoController extends BaseController {
+  constructor() {
+    super()
+  }
   
   getMyInfo(req, resp, next) {
     Logger.info(`Iniciando getMyInfo...`)
     const myInfo = infoService.getMyInfo()
 
-    resp.body = myInfo
-    resp.send(resp.body)
+    super.sendResponse(resp, myInfo)
 
     Logger.info(`getMyInfo finalizado com sucesso!`)
     next()
@@ -26,9 +28,8 @@ export default class InfoController {
       "mensagem": mensagens.info.infoAtualizada,
       "novaInfo": novaInfo
     }
-    resp.body = resposta
-    resp.send(resp.body)
-    
+    super.sendResponse(resp, resposta)
+
     Logger.info(`updateMyInfo finalizado com sucesso!`)
     next()
   }

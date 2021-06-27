@@ -5,12 +5,15 @@ import EleicaoService from "../services/eleicaoService.js"
 import InfoService from "../services/infoService.js"
 import Logger from "../utils/logger.js"
 import mensagens from "../utils/mensagens.js"
+import BaseController from "./baseController.js"
 
 const eleicaoService = new EleicaoService()
 const infoService = new InfoService()
 
-export default class EleicaoController {
-  constructor() { }
+export default class EleicaoController extends BaseController {
+  constructor() {
+    super()
+  }
 
   getEleicaoAtual(req, resp, next) {
     Logger.info(`Iniciando getEleicaoAtual...`)
@@ -18,8 +21,7 @@ export default class EleicaoController {
     const myInfo = infoService.getMyInfo()
 
     const msg = { "tipo_de_eleicao_ativa": myInfo.eleicao, "eleicao_em_andamento": eleicao.ativo }
-    resp.body = msg
-    resp.send(resp.body)
+    super.sendResponse(resp, msg)
     
     Logger.info(`getEleicaoAtual finalizado com sucesso!`)
     next()
@@ -38,8 +40,8 @@ export default class EleicaoController {
         Logger.warn(mensagens.eleicao.outraEleicaoAndamento)
         msg = new Mensagem(mensagens.eleicao.outraEleicaoAndamento, false)
       }
-      resp.body = msg
-      resp.send(resp.body)
+      resp.status(409)
+      super.sendResponse(resp, msg)
 
       Logger.info(`iniciaEleicao finalizado com falha!`)
       next()
@@ -55,8 +57,7 @@ export default class EleicaoController {
     })
 
     const msg = new Mensagem(mensagens.eleicao.eleicaoIniciada, true)
-    resp.body = msg
-    resp.send(resp.body)
+    super.sendResponse(resp, msg)
 
     Logger.info(`iniciaEleicao finalizado com sucesso!`)
     next()
@@ -69,9 +70,8 @@ export default class EleicaoController {
     eleicaoService.finalizaEleicaoAtual()
 
     const msg = new Mensagem(mensagens.eleicao.coordenadorAtualizado, true)
-    resp.body = msg
-    resp.send(resp.body)
-    
+    super.sendResponse(resp, msg)
+
     Logger.info(`atualizaCoordenador finalizado com sucesso!`)
     next()
   }

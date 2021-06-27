@@ -27,9 +27,9 @@ const startEleicao = async (idEleicao) => {
     infoService.updateMyInfo({ "lider": 1 })
     infoService.atualizaCoordenador(myInfo.identificacao)
     eleicaoService.finalizaEleicaoAtual()
-    Logger.info(`Eleição '${idEleicao}' finalizada com sucesso!`)
   }
 
+  Logger.info("StartEleicao finalizado com sucesso!")
   return true
 }
 

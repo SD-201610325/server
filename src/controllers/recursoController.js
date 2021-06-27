@@ -2,18 +2,20 @@ import Mensagem from "../models/mensagem.js"
 import mensagens from "../utils/mensagens.js"
 import RecursoService from "../services/recursoService.js";
 import Logger from "../utils/logger.js";
+import BaseController from "./baseController.js";
 
 const recursoService = new RecursoService()
 
-export default class RecursoController {
-  constructor() { }
+export default class RecursoController extends BaseController {
+  constructor() {
+    super()
+  }
 
   getRecurso(req, resp, next) {
     Logger.info(`Iniciando getRecurso...`)
 
     const recurso = recursoService.getRecurso()
-    resp.body = recurso
-    resp.send(resp.body)
+    super.sendResponse(resp, recurso)
 
     Logger.info(`getRecurso finalizado com sucesso!`)
     next()
@@ -25,17 +27,15 @@ export default class RecursoController {
 
     if (sucesso) {
       const msg = new Mensagem(mensagens.recurso.recursoAlocado, true)
-      resp.body = msg
-      resp.send(resp.body)
+      super.sendResponse(resp, msg)
 
       Logger.info(`requisitarRecurso finalizado com sucesso!`)
       next()
     } else {
       const msg = new Mensagem(mensagens.recurso.recursoIndisponivel, false)
       resp.status(409)
-      resp.body = msg
-      resp.send(resp.body)
-      
+      super.sendResponse(resp, msg)
+
       Logger.info(`requisitarRecurso finalizado com falha!`)
       next()
     }

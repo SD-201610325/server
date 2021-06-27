@@ -22,7 +22,7 @@ export default class EleicaoService {
   }
 
   finalizaEleicaoAtual() {
-    Logger.info(`Finalizando eleicao atual...`)
+    Logger.info(`Finalizando eleicao atual de id '${eleicaoAtual.id}'...`)
     eleicaoAtual.ativo = false
     Logger.info(`Eleicao atual finalizada com sucesso!`)
   }
