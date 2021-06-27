@@ -16,7 +16,7 @@ const updateInfo = async () => {
     }
   }
 
-  infoService.updateOthersInfo(othersInfo)
+  infoService.setOthersInfo(othersInfo)
 
   Logger.info("UpdateInfoCommand finalizado com sucesso!")
   return othersInfo

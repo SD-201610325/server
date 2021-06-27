@@ -83,19 +83,6 @@ export default class InfoService {
     Logger.info(`Info atual dos servidores conhecidos salva com sucesso!`)
   }
 
-  updateOthersInfo(infos) {
-    Logger.info(`Atualizando info atual dos servidores conhecidos com valor '${JSON.stringify(infos)}'...`)
-    infos.forEach(e => {
-      const other = othersInfo.find(o => o.id === e.id)
-      if (other) {
-        Object.assign(other, e)
-      } else {
-        othersInfo.push(e)
-      }
-    })
-    Logger.info(`Info atual dos servidores conhecidos atualizada com sucesso!`)
-  }
-
   setOtherInfo(id, info) {
     Logger.info(`Atualizando info atual dos servidores conhecidos com valor '${JSON.stringify(infos)}'...`)
     const other = othersInfo.find(o => o.id === id)

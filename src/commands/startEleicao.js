@@ -19,14 +19,32 @@ const startEleicao = async (idEleicao) => {
 
   if (filteredOthersInfo.length) {
     Logger.info("Encontrado servidores maiores. Enviando requisições de eleição...")
-    await Promise.all(filteredOthersInfo.map(e => requestStartEleicao(myInfo.servidores_conhecidos.find(s => s.id === e.id), idEleicao)))
-    Logger.info("Processo de eleição repassado para outros servidores!")
+
+    const promises = filteredOthersInfo.map(e => requestStartEleicao(myInfo.servidores_conhecidos.find(s => s.id === e.id), idEleicao))
+    const resolved = await Promise.allSettled(promises)
+
+    if (resolved.some(r => r.status !== "fulfilled")) {
+      Logger.error(`Erro durante envio de requisições de eleição para ao menos um servidor!`)
+      Logger.warn("StartEleicao finalizado com falha!")
+      return false
+    }
+
+    Logger.info("Processo de eleição repassado para outros servidores com sucesso!")
   } else {
-    Logger.info("Nenhum servidor maior encontrado. Enviando requisições de coordenador e finalizando eleição...")
-    await Promise.all(myInfo.servidores_conhecidos.map(e => requestDeclararCoordenador(e, myInfo.identificacao, idEleicao)))
+    Logger.info("Nenhum servidor maior encontrado. Enviando declarações de coordenador e finalizando eleição...")
+    
+    const promises = myInfo.servidores_conhecidos.map(s => requestDeclararCoordenador(s, myInfo.identificacao, idEleicao))
+    const resolved = await Promise.allSettled(promises)
+    
     infoService.updateMyInfo({ "lider": 1 })
     infoService.atualizaCoordenador(myInfo.identificacao)
     eleicaoService.finalizaEleicaoAtual()
+
+    if (resolved.some(r => r.status !== "fulfilled")) {
+      Logger.error(`Erro durante envio de declaração de coordenador para ao menos um servidor!`)
+      Logger.warn("StartEleicao finalizado com falha!")
+      return false
+    }
   }
 
   Logger.info("StartEleicao finalizado com sucesso!")
@@ -39,7 +57,9 @@ const requestStartEleicao = async (info, idEleicao) => {
     const response = await httpClient.post(info.url + "/eleicao", { "id": idEleicao })
     Logger.info(`Resposta do servidor '${info.url}': ${JSON.stringify(response.data)}`)
   } catch (e) {
-    Logger.error(`Erro em POST '/eleicao' do servidor '${info.url}. Mensagem: ${JSON.stringify(e.message)}`)
+    const msg = `Erro em POST '/eleicao' do servidor '${info.url}. Mensagem: ${JSON.stringify(e.message)}`
+    Logger.error(msg)
+    return Promise.reject(msg)
   }
 }
 
@@ -49,7 +69,9 @@ const requestDeclararCoordenador = async (info, idCoordenador, idEleicao) => {
     const response = await httpClient.post(info.url + "/eleicao/coordenador", { "coordenador": idCoordenador, "id_eleicao": idEleicao })
     Logger.info(`Resposta do servidor '${info.url}': ${JSON.stringify(response.data)}`)
   } catch (e) {
-    Logger.error(`Erro em POST '/eleicao/coordenador' do servidor '${info.url}'. Mensagem: ${JSON.stringify(e.message)}`)
+    const msg = `Erro em POST '/eleicao/coordenador' do servidor '${info.url}'. Mensagem: ${JSON.stringify(e.message)}`
+    Logger.error(msg)
+    return Promise.reject(msg)
   }
 }
 

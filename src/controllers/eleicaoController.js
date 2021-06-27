@@ -43,7 +43,7 @@ export default class EleicaoController extends BaseController {
       resp.status(409)
       super.sendResponse(resp, msg)
 
-      Logger.info(`iniciaEleicao finalizado com falha!`)
+      Logger.warn(`iniciaEleicao finalizado com falha!`)
       next()
       return
     }
