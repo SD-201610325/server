@@ -10,7 +10,10 @@ export default class InfoController {
   getMyInfo(req, resp, next) {
     Logger.info(`Iniciando getMyInfo...`)
     const myInfo = infoService.getMyInfo()
+
     resp.body = myInfo
+    resp.send(resp.body)
+
     Logger.info(`getMyInfo finalizado com sucesso!`)
     next()
   }
@@ -24,6 +27,8 @@ export default class InfoController {
       "novaInfo": novaInfo
     }
     resp.body = resposta
+    resp.send(resp.body)
+    
     Logger.info(`updateMyInfo finalizado com sucesso!`)
     next()
   }

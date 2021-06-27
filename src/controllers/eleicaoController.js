@@ -19,6 +19,7 @@ export default class EleicaoController {
 
     const msg = { "tipo_de_eleicao_ativa": myInfo.eleicao, "eleicao_em_andamento": eleicao.ativo }
     resp.body = msg
+    resp.send(resp.body)
     
     Logger.info(`getEleicaoAtual finalizado com sucesso!`)
     next()
@@ -38,6 +39,8 @@ export default class EleicaoController {
         msg = new Mensagem(mensagens.eleicao.outraEleicaoAndamento, false)
       }
       resp.body = msg
+      resp.send(resp.body)
+
       Logger.info(`iniciaEleicao finalizado com falha!`)
       next()
       return
@@ -53,6 +56,8 @@ export default class EleicaoController {
 
     const msg = new Mensagem(mensagens.eleicao.eleicaoIniciada, true)
     resp.body = msg
+    resp.send(resp.body)
+
     Logger.info(`iniciaEleicao finalizado com sucesso!`)
     next()
   }
@@ -65,6 +70,8 @@ export default class EleicaoController {
 
     const msg = new Mensagem(mensagens.eleicao.coordenadorAtualizado, true)
     resp.body = msg
+    resp.send(resp.body)
+    
     Logger.info(`atualizaCoordenador finalizado com sucesso!`)
     next()
   }
