@@ -21,34 +21,42 @@ export default class EleicaoController extends BaseController {
     const myInfo = infoService.getMyInfo()
 
     const msg = { "tipo_de_eleicao_ativa": myInfo.eleicao, "eleicao_em_andamento": eleicao.ativo }
-    super.sendResponse(resp, msg)
+    super.sendResponse(resp, msg, next)
     
     Logger.info(`getEleicaoAtual finalizado com sucesso!`)
-    next()
   }
 
-  iniciaEleicao(req, resp, next) {
+  async iniciaEleicao(req, resp, next) {
     Logger.info(`Iniciando iniciaEleicao...`)
 
-    const eleicao = eleicaoService.getEleicaoAtual()
-    if (eleicao.ativo) {
-      let msg = ""
-      if (eleicao.id == req.body.id) {
-        Logger.warn(mensagens.eleicao.eleicaoAndamento)
-        msg = new Mensagem(mensagens.eleicao.eleicaoAndamento, false)
-      } else {
-        Logger.warn(mensagens.eleicao.outraEleicaoAndamento)
-        msg = new Mensagem(mensagens.eleicao.outraEleicaoAndamento, false)
-      }
-      resp.status(409)
-      super.sendResponse(resp, msg)
+    const myInfo = infoService.getMyInfo()
+    if (myInfo.eleicao.toLowerCase() !== "valentao" && myInfo.eleicao.toLowerCase() !== "anel") {  
+      Logger.error(`Tipo de eleição inválida. Tipo salvo em '/info': ${myInfo.eleicao}!`)
+
+      const msg = new Mensagem(mensagens.eleicao.tipoEleicaoInvalido, true)
+      resp.status(400)
+      super.sendResponse(resp, msg, next)
 
       Logger.warn(`iniciaEleicao finalizado com falha!`)
-      next()
       return
     }
 
-    eleicaoService.setEleicaoAtual({ "id": req.body.id, "ativo": true })
+    const eleicao = eleicaoService.getEleicaoAtual()
+    if (eleicao.ativo && myInfo.eleicao.toLowerCase() !== "anel") {
+      let msg = ""
+      if (eleicao.id == req.body.id) {
+        Logger.warn(`Eleição de id '${req.body.id}' já está em andamento!`)
+        msg = new Mensagem(mensagens.eleicao.eleicaoAndamento, false)
+      } else {
+        Logger.warn(`Outra eleição de id '${req.body.id}' já está em andamento!`)
+        msg = new Mensagem(mensagens.eleicao.outraEleicaoAndamento, false)
+      }
+      resp.status(409)
+      super.sendResponse(resp, msg, next)
+
+      Logger.warn(`iniciaEleicao finalizado com falha!`)
+      return
+    }
 
     Logger.info("Chamando UpdateInfo...")
     updateInfo().then(() => {
@@ -56,11 +64,13 @@ export default class EleicaoController extends BaseController {
       startEleicao(req.body.id)
     })
 
+    if (!eleicao.ativo) {
+      eleicaoService.setEleicaoAtual({ "id": req.body.id, "ativo": true })
+    }
     const msg = new Mensagem(mensagens.eleicao.eleicaoIniciada, true)
-    super.sendResponse(resp, msg)
+    super.sendResponse(resp, msg, next)
 
     Logger.info(`iniciaEleicao finalizado com sucesso!`)
-    next()
   }
 
   atualizaCoordenador(req, resp, next) {
@@ -70,9 +80,8 @@ export default class EleicaoController extends BaseController {
     eleicaoService.finalizaEleicaoAtual()
 
     const msg = new Mensagem(mensagens.eleicao.coordenadorAtualizado, true)
-    super.sendResponse(resp, msg)
+    super.sendResponse(resp, msg, next)
 
     Logger.info(`atualizaCoordenador finalizado com sucesso!`)
-    next()
   }
 }

@@ -15,10 +15,9 @@ export default class RecursoController extends BaseController {
     Logger.info(`Iniciando getRecurso...`)
 
     const recurso = recursoService.getRecurso()
-    super.sendResponse(resp, recurso)
+    super.sendResponse(resp, recurso, next)
 
     Logger.info(`getRecurso finalizado com sucesso!`)
-    next()
   }
 
   requisitarRecurso(req, resp, next) {
@@ -27,17 +26,16 @@ export default class RecursoController extends BaseController {
 
     if (sucesso) {
       const msg = new Mensagem(mensagens.recurso.recursoAlocado, true)
-      super.sendResponse(resp, msg)
+      super.sendResponse(resp, msg, next)
 
       Logger.info(`requisitarRecurso finalizado com sucesso!`)
       next()
     } else {
       const msg = new Mensagem(mensagens.recurso.recursoIndisponivel, false)
       resp.status(409)
-      super.sendResponse(resp, msg)
+      super.sendResponse(resp, msg, next)
 
       Logger.info(`requisitarRecurso finalizado com falha!`)
-      next()
     }
   }
 }

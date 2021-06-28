@@ -47,7 +47,7 @@ const determinaStartEleicao = async () => {
     const serverUp = await isServerUp(serverCoordenador?.url)
     if (!serverUp) {
       startEleicao = true
-      Logger.info("Determinando início de eleição pois atual coordenador não está disponível!")
+      Logger.info("Determinando início de eleição pois coordenador atual não está disponível!")
     }
   }
 

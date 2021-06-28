@@ -10,6 +10,7 @@ const mensagens = {
     "eleicaoAndamento": "Essa eleição já está em andamento!",
     "outraEleicaoAndamento": "Já existe uma outra eleição em andamento!",
     "eleicaoIniciada": "Eleição iniciada com sucesso!",
+    "tipoEleicaoInvalido": "Tipo de eleição inválida! Valores aceitos: 'valentao', 'anel'!",
     "coordenadorAtualizado": "Coordenador atualizado com sucesso!"
   }
 }

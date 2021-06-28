@@ -14,10 +14,9 @@ export default class InfoController extends BaseController {
     Logger.info(`Iniciando getMyInfo...`)
     const myInfo = infoService.getMyInfo()
 
-    super.sendResponse(resp, myInfo)
+    super.sendResponse(resp, myInfo, next)
 
     Logger.info(`getMyInfo finalizado com sucesso!`)
-    next()
   }
 
   updateMyInfo(req, resp, next) {
@@ -28,9 +27,8 @@ export default class InfoController extends BaseController {
       "mensagem": mensagens.info.infoAtualizada,
       "novaInfo": novaInfo
     }
-    super.sendResponse(resp, resposta)
+    super.sendResponse(resp, resposta, next)
 
     Logger.info(`updateMyInfo finalizado com sucesso!`)
-    next()
   }
 }
