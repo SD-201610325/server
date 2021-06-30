@@ -1,4 +1,5 @@
 import axios from "axios"
+import config from "../../config.js"
 import InfoService from "../services/infoService.js"
 import Logger from "../utils/logger.js"
 import startEleicaoAnel from "./startEleicaoAnel.js"
@@ -34,6 +35,14 @@ const startEleicao = async (idEleicao) => {
 export const requestStartEleicao = async (info, idEleicao) => {
   try {
     Logger.info(`Requisitando início de eleição para o servidor '${info.url}' com id de eleição '${idEleicao}'...`)
+    httpClient.post(
+      config.LOG_SERVER_BASE_URL + "/log",
+      {
+        "from": "https://sd-app-server-jesulino.herokuapp.com",
+        "severity": "Enviando request",
+        "comment": `Requisitando início de eleição para o servidor '${info.url}' com id de eleição '${idEleicao}'`,
+        "body": { "id": idEleicao }
+      })
     const response = await httpClient.post(info.url + "/eleicao", { "id": idEleicao })
     Logger.info(`Resposta do servidor '${info.url}': ${JSON.stringify(response.data)}`)
   } catch (e) {
@@ -46,6 +55,14 @@ export const requestStartEleicao = async (info, idEleicao) => {
 export const requestDeclararCoordenador = async (info, idCoordenador, idEleicao) => {
   try {
     Logger.info(`Enviando declaração de coordenador para o servidor '${info.url}' com id coordenador '${idCoordenador}' e id de eleição '${idEleicao}'...`)
+    httpClient.post(
+      config.LOG_SERVER_BASE_URL + "/log",
+      {
+        "from": "https://sd-app-server-jesulino.herokuapp.com",
+        "severity": "Enviando request",
+        "comment": `Enviando declaração de coordenador para o servidor '${info.url}' com id coordenador '${idCoordenador}' e id de eleição '${idEleicao}'`,
+        "body": { "coordenador": idCoordenador, "id_eleicao": idEleicao }
+      })
     const response = await httpClient.post(info.url + "/eleicao/coordenador", { "coordenador": idCoordenador, "id_eleicao": idEleicao })
     Logger.info(`Resposta do servidor '${info.url}': ${JSON.stringify(response.data)}`)
   } catch (e) {

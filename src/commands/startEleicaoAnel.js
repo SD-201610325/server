@@ -19,12 +19,7 @@ const startEleicaoAnel = async (idEleicao) => {
     "idNodes": array
   }
 
-  if (codigoEleicao.idEleicao === eleicaoAtual.id && codigoEleicao.idNodes.length > 0) {
-    if (!codigoEleicao.idNodes.some(a => a == myInfo.identificacao)) {
-      Logger.error("Id deste server não encontrado na mensagem da eleição!")
-      Logger.warn("StartEleicaoAnel finalizado com falha!")
-      return false
-    }
+  if (codigoEleicao.idEleicao === eleicaoAtual.id && codigoEleicao.idNodes.length > 0 && codigoEleicao.idNodes.some(a => a == myInfo.identificacao)) {
     Logger.info("Eleição iniciada por este server completou o anel!")
     const success = await declaraCoordenador(codigoEleicao, othersInfo, myInfo)
     if (!success) {

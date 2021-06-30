@@ -1,3 +1,4 @@
+import config from "../../config.js"
 import startEleicao from "../commands/startEleicao.js"
 import updateInfo from "../commands/updateInfo.js"
 import Mensagem from "../models/mensagem.js"
@@ -42,15 +43,9 @@ export default class EleicaoController extends BaseController {
     }
 
     const eleicao = eleicaoService.getEleicaoAtual()
-    if (eleicao.ativo && myInfo.eleicao.toLowerCase() !== "anel") {
-      let msg = ""
-      if (eleicao.id == req.body.id) {
-        Logger.warn(`Eleição de id '${req.body.id}' já está em andamento!`)
-        msg = new Mensagem(mensagens.eleicao.eleicaoAndamento, false)
-      } else {
-        Logger.warn(`Outra eleição de id '${req.body.id}' já está em andamento!`)
-        msg = new Mensagem(mensagens.eleicao.outraEleicaoAndamento, false)
-      }
+    if (eleicao.ativo && eleicao.id === req.body.id && myInfo.eleicao.toLowerCase() !== "anel") {
+      Logger.warn(`Eleição de id '${req.body.id}' já está em andamento!`)
+      const msg = new Mensagem(mensagens.eleicao.eleicaoAndamento, false)
       resp.status(409)
       super.sendResponse(resp, msg, next)
 
@@ -70,6 +65,7 @@ export default class EleicaoController extends BaseController {
     const msg = new Mensagem(mensagens.eleicao.eleicaoIniciada, true)
     super.sendResponse(resp, msg, next)
 
+    setTimeout(finalizaEleicao.bind(null, req.body.id), config.FINALIZA_ELEICAO_DELAY_MS)
     Logger.info(`iniciaEleicao finalizado com sucesso!`)
   }
 
@@ -83,5 +79,13 @@ export default class EleicaoController extends BaseController {
     super.sendResponse(resp, msg, next)
 
     Logger.info(`atualizaCoordenador finalizado com sucesso!`)
+  }
+}
+
+const finalizaEleicao = (id) => {
+  const eleicao = eleicaoService.getEleicaoAtual()
+  if (eleicao.ativo && eleicao.id === id) {
+    Logger.warn(`Finalizando eleição de id '${id}' por atraso maior que ${config.FINALIZA_ELEICAO_DELAY_MS / 1000}s na resposta do coordenador...`)
+    eleicaoService.finalizaEleicaoAtual()
   }
 }
