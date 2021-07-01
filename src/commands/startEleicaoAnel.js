@@ -20,7 +20,7 @@ const startEleicaoAnel = async (idEleicao) => {
   }
   eleicaoService.setEleicaoAtual({ "id": codigoEleicao.idEleicao, "ativo": true })
 
-  if (codigoEleicao.idEleicao === eleicaoAtual.id && codigoEleicao.idNodes.length > 0 && codigoEleicao.idNodes.some(a => a == myInfo.identificacao)) {
+  if (codigoEleicao.idEleicao === eleicaoAtual.id && codigoEleicao.idNodes.length > 0 && codigoEleicao.idNodes[0] == myInfo.identificacao) {
     Logger.info("Eleição iniciada por este server completou o anel!")
     const success = await declaraCoordenador(codigoEleicao, othersInfo, myInfo)
     if (!success) {
