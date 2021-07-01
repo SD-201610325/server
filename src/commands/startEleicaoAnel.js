@@ -74,7 +74,7 @@ const startEleicaoAnel = async (idEleicao) => {
 const declaraCoordenador = async (codigoEleicao, othersInfo, myInfo) => {
   Logger.info("Enviando declarações de coordenador e finalizando eleição...")
   
-  const idCoordenador = Number(codigoEleicao.idNodes.reduce((acc, cur) => cur > acc ? cur : acc, codigoEleicao.idNodes[0]))
+  const idCoordenador = Math.max(...codigoEleicao.idNodes)
   const idEleicao = codigoEleicao.idEleicao + config.ELEICAO_ANEL_SEPARATOR + codigoEleicao.idNodes.join(config.ELEICAO_ANEL_SEPARATOR)
 
   const filteredOthersInfo = othersInfo
