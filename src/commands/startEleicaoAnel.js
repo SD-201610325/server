@@ -58,12 +58,10 @@ const startEleicaoAnel = async (idEleicao) => {
     const novoIdEleicao = codigoEleicao.idEleicao + config.ELEICAO_ANEL_SEPARATOR + codigoEleicao.idNodes.join(config.ELEICAO_ANEL_SEPARATOR)
     await requestStartEleicao(nextServer, novoIdEleicao)
       .catch(e => {
-        if (resolved.some(r => r.status !== "fulfilled")) {
-          Logger.error(`Erro ao repassar mensagem de eleição para servidor '${nextServer.url}'!`)
-          Logger.warn("StartEleicaoAnel finalizado com falha!")
-          return false
-        }
+        Logger.error(`Erro ao repassar mensagem de eleição para servidor '${nextServer.url}'!`)
+        Logger.warn("StartEleicaoAnel finalizado com falha!")
       })
+    eleicaoService.setEleicaoAtual({ "id": novoIdEleicao, "ativo": true })
   }
 
   Logger.info("StartEleicaoAnel finalizado com sucesso!")
