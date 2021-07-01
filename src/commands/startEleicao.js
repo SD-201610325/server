@@ -39,7 +39,7 @@ export const requestStartEleicao = async (info, idEleicao) => {
       config.LOG_SERVER_BASE_URL + "/log",
       {
         "from": "https://sd-app-server-jesulino.herokuapp.com",
-        "severity": "Enviando request",
+        "severity": "sucesso",
         "comment": `Requisitando início de eleição para o servidor '${info.url}' com id de eleição '${idEleicao}'`,
         "body": { "id": idEleicao }
       })
@@ -59,7 +59,7 @@ export const requestDeclararCoordenador = async (info, idCoordenador, idEleicao)
       config.LOG_SERVER_BASE_URL + "/log",
       {
         "from": "https://sd-app-server-jesulino.herokuapp.com",
-        "severity": "Enviando request",
+        "severity": "sucesso",
         "comment": `Enviando declaração de coordenador para o servidor '${info.url}' com id coordenador '${idCoordenador}' e id de eleição '${idEleicao}'`,
         "body": { "coordenador": idCoordenador, "id_eleicao": idEleicao }
       })

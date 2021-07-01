@@ -30,7 +30,7 @@ const requestInfoServer = async (info) => {
       config.LOG_SERVER_BASE_URL + "/log",
       {
         "from": "https://sd-app-server-jesulino.herokuapp.com",
-        "severity": "Enviando request",
+        "severity": "sucesso",
         "comment": `Requisitando info do servidor '${info.url}'`
       })
     const response = await httpClient.get(info.url + "/info")

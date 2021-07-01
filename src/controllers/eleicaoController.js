@@ -72,6 +72,10 @@ export default class EleicaoController extends BaseController {
   atualizaCoordenador(req, resp, next) {
     Logger.info(`Iniciando atualizaCoordenador...`)
     infoService.atualizaCoordenador(req.body.coordenador)
+    const myInfo = infoService.getMyInfo()
+    if (myInfo.identificacao == req.body.coordenador) {
+      infoService.updateMyInfo({ "lider": 1})
+    }
 
     eleicaoService.finalizaEleicaoAtual()
 
