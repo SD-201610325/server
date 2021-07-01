@@ -26,6 +26,8 @@ const startEleicaoAnel = async (idEleicao) => {
       Logger.warn("StartEleicaoAnel finalizado com falha!")
       return false
     }
+    Logger.info("StartEleicaoAnel finalizado com sucesso!")
+    return true
   }
 
   let sortedInfo = othersInfo.sort((a,b) => a.identificacao - b.identificacao)
