@@ -13,6 +13,8 @@ const startEleicaoValentao = async (idEleicao) => {
 
   const othersInfo = infoService.getOthersInfo()
 
+  eleicaoService.setEleicaoAtual({ "id": idEleicao, "ativo": true })
+
   const filteredOthersInfo = othersInfo
     .filter(o => o.identificacao > myInfo.identificacao && o.status.toLowerCase() == "up")
 

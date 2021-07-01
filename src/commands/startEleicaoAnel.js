@@ -18,6 +18,7 @@ const startEleicaoAnel = async (idEleicao) => {
     "idEleicao": array.shift(),
     "idNodes": array
   }
+  eleicaoService.setEleicaoAtual({ "id": codigoEleicao.idEleicao, "ativo": true })
 
   if (codigoEleicao.idEleicao === eleicaoAtual.id && codigoEleicao.idNodes.length > 0 && codigoEleicao.idNodes.some(a => a == myInfo.identificacao)) {
     Logger.info("Eleição iniciada por este server completou o anel!")
@@ -47,7 +48,9 @@ const startEleicaoAnel = async (idEleicao) => {
   } else {
     Logger.info("Encontrado próximo server no anel. Repassando mensagem de eleição...")
 
-    codigoEleicao.idNodes.push(myInfo.identificacao.toString())
+    if (!codigoEleicao.idNodes.some(a => a == myInfo.identificacao)) {
+      codigoEleicao.idNodes.push(myInfo.identificacao.toString())
+    }
     const nextServer = myInfo.servidores_conhecidos.find(s => s.id === nextInfo.id)
     if (!nextServer) {
       Logger.error(`Próximo servidor no anel não encontrado na lista de servidores conhecidos!`)
@@ -61,7 +64,7 @@ const startEleicaoAnel = async (idEleicao) => {
         Logger.error(`Erro ao repassar mensagem de eleição para servidor '${nextServer.url}'!`)
         Logger.warn("StartEleicaoAnel finalizado com falha!")
       })
-    eleicaoService.setEleicaoAtual({ "id": novoIdEleicao, "ativo": true })
+    eleicaoService.setEleicaoAtual({ "id": codigoEleicao.idEleicao, "ativo": true })
   }
 
   Logger.info("StartEleicaoAnel finalizado com sucesso!")
