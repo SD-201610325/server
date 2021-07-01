@@ -90,6 +90,8 @@ const declaraCoordenador = async (codigoEleicao, othersInfo, myInfo) => {
     Logger.error(`Erro durante envio de declaração de coordenador para ao menos um servidor!`)
     return false
   }
+
+  return true
 }
 
 export default startEleicaoAnel
