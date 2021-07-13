@@ -3,8 +3,11 @@ import mensagens from "../utils/mensagens.js"
 import RecursoService from "../services/recursoService.js";
 import Logger from "../utils/logger.js";
 import BaseController from "./baseController.js";
+import InfoService from "../services/infoService.js";
+import updateInfo from "../commands/updateInfo.js";
 
 const recursoService = new RecursoService()
+const infoService = new InfoService()
 
 export default class RecursoController extends BaseController {
   constructor() {
@@ -14,14 +17,64 @@ export default class RecursoController extends BaseController {
   getRecurso(req, resp, next) {
     Logger.info(`Iniciando getRecurso...`)
 
+    const myInfo = infoService.getMyInfo()
+    const coordAtual = infoService.getCoordenadorAtual()
     const recurso = recursoService.getRecurso()
-    super.sendResponse(resp, recurso, next)
+
+    if (myInfo.lider) {
+      super.sendResponse(resp, {"ocupado": recurso.ocupado, "id_lider": coordAtual}, next)
+    } else {
+      if (recurso.acessandoRecurso) {
+        resp.status(409)
+      }
+      super.sendResponse(resp, {"ocupado": recurso.acessandoRecurso, "id_lider": coordAtual}, next)
+    }
 
     Logger.info(`getRecurso finalizado com sucesso!`)
   }
 
-  requisitarRecurso(req, resp, next) {
+  async requisitarRecurso(req, resp, next) {
     Logger.info(`Iniciando requisitarRecurso...`)
+    const coordAtual = infoService.getCoordenadorAtual()
+
+    if (!coordAtual) {
+      const msg = new Mensagem(mensagens.recurso.nenhumLider, false)
+      resp.status(409)
+      super.sendResponse(resp, msg, next)
+      Logger.warn(`Nenhum coordenador definido. requisitarRecurso finalizado com falha!`)
+      return
+    }
+
+    const myInfo = infoService.getMyInfo()
+
+    if (!myInfo.lider) {
+      Logger.info(`Iniciando processo de verificar disponibilidade do líder...`)
+
+      Logger.info("Chamando UpdateInfo...")
+      const othersInfo = await updateInfo()
+
+      Logger.info(`Verificando disponibilidade do líder com outros servidores...`)
+      const liberado = await recursoService.verificaDisponibilidade(coordAtual, myInfo, othersInfo)
+
+      if (liberado) {
+        const success = await recursoService.requisitaRecursoLider(coordAtual, othersInfo)
+        if (!success) {
+          const msg = new Mensagem(mensagens.recurso.erroRecursoLider, false)
+          super.sendResponse(resp, msg, next)
+          return
+        }
+        const msg = new Mensagem(mensagens.recurso.recursoLiderRequisitado, true)
+        super.sendResponse(resp, msg, next)
+      } else {
+        const msg = new Mensagem(mensagens.recurso.recursoOcupado, false)
+        resp.status(409)
+        super.sendResponse(resp, msg, next)
+      }
+
+      return
+    }
+
+    Logger.info(`Iniciando alocação de recurso como líder...`)
     const sucesso = recursoService.alocarRecurso()
 
     if (sucesso) {

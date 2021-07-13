@@ -3,8 +3,12 @@ const mensagens = {
     "infoAtualizada": "Info atualizada com sucesso!"
   },
   "recurso": {
+    "nenhumLider": "Nenhum líder definido. Impossível requisitar recurso!",
     "recursoAlocado": "Recurso alocado com sucesso!",
-    "recursoIndisponivel": "Recurso indisponível no momento. Tente novamente mais tarde!"
+    "recursoIndisponivel": "Recurso indisponível no momento. Tente novamente mais tarde!",
+    "recursoLiderRequisitado": "Recurso do líder requisitado com sucesso!",
+    "recursoOcupado": "Recurso do líder sendo acessado por outro servidor no momento. Tente novamente mais tarde!",
+    "erroRecursoLider": "Erro inesperado ao requisitar recurso do líder!"
   },
   "eleicao": {
     "eleicaoAndamento": "Essa eleição já está em andamento!",
