@@ -36,12 +36,21 @@ export default class RecursoController extends BaseController {
   async requisitarRecurso(req, resp, next) {
     Logger.info(`Iniciando requisitarRecurso...`)
     const coordAtual = infoService.getCoordenadorAtual()
+    const recurso = recursoService.getRecurso()
 
     if (!coordAtual) {
       const msg = new Mensagem(mensagens.recurso.nenhumLider, false)
       resp.status(409)
       super.sendResponse(resp, msg, next)
       Logger.warn(`Nenhum coordenador definido. requisitarRecurso finalizado com falha!`)
+      return
+    }
+
+    if (recurso.ocupado || recurso.acessandoRecurso) {
+      const msg = new Mensagem(mensagens.recurso.recursoIndisponivel, false)
+      resp.status(409)
+      super.sendResponse(resp, msg, next)
+      Logger.warn(`Recurso indisponível. requisitarRecurso finalizado com falha!`)
       return
     }
 
@@ -57,12 +66,14 @@ export default class RecursoController extends BaseController {
       const liberado = await recursoService.verificaDisponibilidade(coordAtual, myInfo, othersInfo)
 
       if (liberado) {
-        const success = await recursoService.requisitaRecursoLider(coordAtual, othersInfo)
-        if (!success) {
-          const msg = new Mensagem(mensagens.recurso.erroRecursoLider, false)
+        const message = await recursoService.requisitaRecursoLider(coordAtual, othersInfo, myInfo)
+        if (message !== "sucesso") {
+          const msg = new Mensagem(mensagens.recurso.erroRecursoLider + " Mensagem: " + message, false)
+          resp.status(500)
           super.sendResponse(resp, msg, next)
           return
         }
+        recursoService.setarRecursoLider()
         const msg = new Mensagem(mensagens.recurso.recursoLiderRequisitado, true)
         super.sendResponse(resp, msg, next)
       } else {

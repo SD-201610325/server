@@ -13,7 +13,9 @@ const updateInfo = async () => {
   const myInfo = infoService.getMyInfo()
   for await (const info of myInfo.servidores_conhecidos.map(e => requestInfoServer(e))) {
     if (info) {
-      othersInfo.push(info)
+      if (info.status?.toLowerCase() == "up") {
+        othersInfo.push(info)
+      }
     }
   }
 

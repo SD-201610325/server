@@ -33,10 +33,26 @@ export default class RecursoService {
     }
   }
 
+  setarRecursoLider() {
+    Logger.info(`Setando recurso do líder sendo acessado...`)
+    recurso.acessandoRecurso = true
+    Logger.info(`Recurso do líder setado como sendo acessado com sucesso!`)
+    const atraso = config.RECURSO_LOCK_DELAY
+    Logger.info(`Programando para considerar recurso do líder desalocado em ${atraso / 1000}s`)
+    setTimeout(this.desalocarRecursoLider, atraso)
+    return true
+  }
+
   desalocarRecurso() {
     Logger.info(`Desalocando recurso...`)
     recurso.ocupado = false
     Logger.info(`Recurso desalocado com sucesso!`)
+  }
+
+  desalocarRecursoLider() {
+    Logger.info(`Desalocando uso de recurso do líder...`)
+    recurso.acessandoRecurso = false
+    Logger.info(`Recurso do líder desalocado com sucesso!`)
   }
 
   async verificaDisponibilidade(coordAtual, myInfo, othersInfo) {
@@ -45,7 +61,7 @@ export default class RecursoService {
       Logger.error("Líder não encontrado nos servidores conhecidos!")
       return false
     }
-    const serversToRequest = myInfo.servidores_conhecidos.filter(s => s.id !== leader.id)
+    const serversToRequest = myInfo.servidores_conhecidos.filter(s => s.id !== leader.id && othersInfo.some(o => o.id === s.id))
 
     Logger.info("Requisitando situação do recurso para servidores não líder...")
     const promises = serversToRequest.map(e => this.verificaRecurso(e))
@@ -79,16 +95,19 @@ export default class RecursoService {
     }
   }
 
-  async requisitaRecursoLider(coordAtual, othersInfo) {
+  async requisitaRecursoLider(coordAtual, othersInfo, myInfo) {
+    Logger.info(`Buscando info do coordenador atual de id '${coordAtual}' na lista ${JSON.stringify(othersInfo)}...`)
     const leader = othersInfo.find(o => o.identificacao == coordAtual)
+    Logger.info(`Info do líder encontrado: ${JSON.stringify(leader)}!`)
+    const leaderConhecido = myInfo.servidores_conhecidos.find(s => s.id === leader.id)
     try {
-      const response = await this.requisitaRecurso(leader)
+      const response = await this.requisitaRecurso(leaderConhecido)
     } catch (e) {
       Logger.error(`Erro ao requisitar recurso do líder. Mensagem: ${JSON.stringify(e.message)}`)
-      return false
+      return e.message
     }
 
-    return true
+    return "sucesso"
   }
 
   async requisitaRecurso(info) {
@@ -104,7 +123,7 @@ export default class RecursoService {
       const response = await httpClient.post(info.url + "/recurso")
       Logger.info(`Resposta do servidor '${info.url}': ${JSON.stringify(response.data)}`)
     } catch (e) {
-      const msg = `Erro em GET '/recurso' do servidor '${info.url}'. Mensagem: ${JSON.stringify(e.message)}`
+      const msg = `Erro em POST '/recurso' do servidor '${info.url}'. Mensagem: ${JSON.stringify(e.message)}`
       Logger.error(msg)
       return Promise.reject(msg)
     }

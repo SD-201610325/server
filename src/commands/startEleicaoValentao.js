@@ -16,7 +16,7 @@ const startEleicaoValentao = async (idEleicao) => {
   eleicaoService.setEleicaoAtual({ "id": idEleicao, "ativo": true })
 
   const filteredOthersInfo = othersInfo
-    .filter(o => o.identificacao > myInfo.identificacao && o.status.toLowerCase() == "up")
+    .filter(o => o.identificacao > myInfo.identificacao && o.status.toLowerCase() == "up" && o.eleicao.toLowerCase() === "valentao")
 
   if (filteredOthersInfo.length) {
     Logger.info("Encontrado servidores maiores. Enviando requisições de eleição...")
