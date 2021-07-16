@@ -39,9 +39,9 @@ export default class InfoService {
   constructor() { }
   
   getMyInfo() {
-    Logger.info(`Consultando myInfo...`)
+    // Logger.info(`Consultando myInfo...`)
     const info = myInfo
-    Logger.info(`MyInfo consultado com sucesso! Valor: ${JSON.stringify(info)}`)
+    // Logger.info(`MyInfo consultado com sucesso! Valor: ${JSON.stringify(info)}`)
     return info
   }
 

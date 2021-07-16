@@ -11,12 +11,12 @@ export default class InfoController extends BaseController {
   }
   
   getMyInfo(req, resp, next) {
-    Logger.info(`Iniciando getMyInfo...`)
+    // Logger.info(`Iniciando getMyInfo...`)
     const myInfo = infoService.getMyInfo()
 
     super.sendResponse(resp, myInfo, next)
 
-    Logger.info(`getMyInfo finalizado com sucesso!`)
+    // Logger.info(`getMyInfo finalizado com sucesso!`)
   }
 
   updateMyInfo(req, resp, next) {
