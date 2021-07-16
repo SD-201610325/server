@@ -34,7 +34,9 @@ const startEleicaoValentao = async (idEleicao) => {
   } else {
     Logger.info("Nenhum servidor maior encontrado. Enviando declarações de coordenador e finalizando eleição...")
     
-    const promises = myInfo.servidores_conhecidos.map(s => requestDeclararCoordenador(s, myInfo.identificacao, idEleicao))
+    const servidoresValentao = othersInfo.filter(o => o.eleicao.toLowerCase() === "valentao")
+    const servidoreToRequest = myInfo.servidores_conhecidos.filter(s => servidoresValentao.some(f => f.id === s.id))
+    const promises = servidoreToRequest.map(s => requestDeclararCoordenador(s, myInfo.identificacao, idEleicao))
     const resolved = await Promise.allSettled(promises)
     
     infoService.updateMyInfo({ "lider": 1 })
