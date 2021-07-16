@@ -59,7 +59,7 @@ export default class RecursoService {
     const leader = othersInfo.find(o => o.identificacao == coordAtual)
     if (!leader) {
       Logger.error("Líder não encontrado nos servidores conhecidos!")
-      return false
+      throw new Error("Líder não encontrado nos servidores conhecidos!")
     }
     const serversToRequest = myInfo.servidores_conhecidos.filter(s => s.id !== leader.id && othersInfo.some(o => o.id === s.id))
 

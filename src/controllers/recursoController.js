@@ -63,23 +63,30 @@ export default class RecursoController extends BaseController {
       const othersInfo = await updateInfo()
 
       Logger.info(`Verificando disponibilidade do líder com outros servidores...`)
-      const liberado = await recursoService.verificaDisponibilidade(coordAtual, myInfo, othersInfo)
+      try {
+        const liberado = await recursoService.verificaDisponibilidade(coordAtual, myInfo, othersInfo)
 
-      if (liberado) {
-        const message = await recursoService.requisitaRecursoLider(coordAtual, othersInfo, myInfo)
-        if (message !== "sucesso") {
-          const msg = new Mensagem(mensagens.recurso.erroRecursoLider + " Mensagem: " + message, false)
-          resp.status(500)
+        if (liberado) {
+          const message = await recursoService.requisitaRecursoLider(coordAtual, othersInfo, myInfo)
+          if (message !== "sucesso") {
+            const msg = new Mensagem(mensagens.recurso.erroRecursoLider + " Mensagem: " + message, false)
+            resp.status(500)
+            super.sendResponse(resp, msg, next)
+            return
+          }
+          recursoService.setarRecursoLider()
+          const msg = new Mensagem(mensagens.recurso.recursoLiderRequisitado, true)
           super.sendResponse(resp, msg, next)
-          return
+        } else {
+          const msg = new Mensagem(mensagens.recurso.recursoOcupado, false)
+          resp.status(409)
+          super.sendResponse(resp, msg, next)
         }
-        recursoService.setarRecursoLider()
-        const msg = new Mensagem(mensagens.recurso.recursoLiderRequisitado, true)
+      } catch (e) {
+        const msg = new Mensagem(e.message, false)
+        resp.status(500)
         super.sendResponse(resp, msg, next)
-      } else {
-        const msg = new Mensagem(mensagens.recurso.recursoOcupado, false)
-        resp.status(409)
-        super.sendResponse(resp, msg, next)
+        return
       }
 
       return
