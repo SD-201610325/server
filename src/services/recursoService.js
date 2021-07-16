@@ -14,7 +14,7 @@ export default class RecursoService {
   
   getRecurso() {
     const recursoObtido = recurso
-    Logger.info(`Estado do recurso consultada com sucesso! Valor: ${recursoObtido}`)
+    Logger.info(`Estado do recurso consultada com sucesso! Valor: ${JSON.stringify(recursoObtido)}`)
     return recursoObtido
   }
 
