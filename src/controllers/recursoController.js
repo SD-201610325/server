@@ -22,6 +22,9 @@ export default class RecursoController extends BaseController {
     const recurso = recursoService.getRecurso()
 
     if (myInfo.lider) {
+      if (recurso.ocupado) {
+        resp.status(409)
+      }
       super.sendResponse(resp, {"ocupado": recurso.ocupado, "id_lider": coordAtual}, next)
     } else {
       if (recurso.acessandoRecurso) {
