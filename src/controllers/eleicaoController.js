@@ -75,6 +75,8 @@ export default class EleicaoController extends BaseController {
     const myInfo = infoService.getMyInfo()
     if (myInfo.identificacao == req.body.coordenador) {
       infoService.updateMyInfo({ "lider": 1})
+    } else {
+      infoService.updateMyInfo({ "lider": 0})
     }
 
     eleicaoService.finalizaEleicaoAtual()
